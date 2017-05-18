@@ -13,7 +13,7 @@ class EloquentTreeItem extends Eloquent {
 	protected $parent = null;
 	protected $children = [];
 
-	public static function print($msg, $output){
+	public static function iprint($msg, $output){
 		if($output)
             $output->writeln('<info>- '.$msg.'</info>');
 	}
@@ -21,13 +21,13 @@ class EloquentTreeItem extends Eloquent {
     public static function rebuildTree($output = null){
 
     	// Create associative array of all elements
-    	self::print('Create associative array',$output);
+    	self::iprint('Create associative array',$output);
     	foreach (self::all() as $item) {
     		self::$items[$item->id] = $item;
     	};
 
     	// Fill parent/children attributes
-    	self::print('Create parent/children relations',$output);
+    	self::iprint('Create parent/children relations',$output);
     	foreach (self::$items as $item) {
     		if($item->parent_id){
     			$item->parent = self::getItem($item->parent_id);
@@ -36,7 +36,7 @@ class EloquentTreeItem extends Eloquent {
     	}
 
     	// Build Tree for each Country (root) item
-    	self::print('Build Tree',$output);
+    	self::iprint('Build Tree',$output);
     	$count = 1;
     	foreach (self::$items as $item) {
     		if($item->level == GEO::LEVEL_COUNTRY){
@@ -46,7 +46,7 @@ class EloquentTreeItem extends Eloquent {
     	}
 
     	// Save in DB
-    	self::print('Save in DB',$output);
+    	self::iprint('Save in DB',$output);
     	foreach (self::$items as $item) {
     		$item->save();
     	}
@@ -57,7 +57,7 @@ class EloquentTreeItem extends Eloquent {
     private static function getItem($id){
     	if(!isset(self::$items[$id]))
     		throw new \Exception("Item $id not found");
-    		
+
     	return self::$items[$id];
     }
 
