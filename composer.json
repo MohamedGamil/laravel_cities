@@ -9,7 +9,7 @@
             "name": "Giannis Gasteratos",
             "email": "igasteratos@gmail.com"
         }
-    ],	
+    ],
     "require": {
         "illuminate/contracts": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*"
     },
@@ -20,12 +20,19 @@
         "symfony/var-dumper": "^3.2",
         "monolog/monolog": "^1.22",
         "vlucas/phpdotenv": "^2.4"
-    },     
+    },
     "autoload": {
         "psr-4" : {
             "Igaster\\LaravelCities\\"          : "src/",
-            "Igaster\\LaravelCities\\Tests\\"   : "tests/"            
+            "Igaster\\LaravelCities\\Tests\\"   : "tests/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Igaster\\LaravelCities\\GeoServiceProvider"
+            ]
+        }
+    }
 }
