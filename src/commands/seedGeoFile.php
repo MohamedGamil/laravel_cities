@@ -25,9 +25,9 @@ class seedGeoFile extends Command
         $result = $this->pdo->query($sql);
         if($result === false)
             throw new Exception("Error in SQL : '$sql'\n".PDO::errorInfo(), 1);
-            
+
         return $result->fetch();
-    }    
+    }
 
     public function buildDbTree($item, $count = 1, $depth = 0){
         $item->left=$count++;
@@ -38,7 +38,7 @@ class seedGeoFile extends Command
         $item->right=$count++;
         return $count;
     }
-    
+
     public function printTree($item){
         $levelStr= str_repeat('--', $item->depth);
         $this->info(sprintf("%s %s [%d,%d]", $levelStr, $item->getName(),$item->left,$item->right));
@@ -114,7 +114,7 @@ class seedGeoFile extends Command
         $maxBoundary = isset($result['maxRight']) ?  $result['maxRight']+1 : 0;
         foreach ($this->geoItems->items as $item) {
             if($item->parentId === null){
-                
+
                 if($item->data[7] !== 'PCLI'){
                     // $this->info("- Skiping Orphan {$item->data[2]} #{$item->data[0]}");
                     $countOrphan++;
@@ -139,7 +139,7 @@ class seedGeoFile extends Command
 
         // Store Tree in DB
         $this->info("Writing in Database</info>");
-        $stmt = $this->pdo->prepare("INSERT INTO geo (`id`, `parent_id`, `left`, `right`, `depth`, `name`, `alternames`, `country`, `level`, `population`, `lat`, `long`) VALUES (:id, :parent_id, :left, :right, :depth, :name, :alternames, :country, :level, :population, :lat, :long)");
+        $stmt = $this->pdo->prepare("INSERT INTO geo (`id`, `parent_id`, `left`, `right`, `depth`, `name`, `alternames`, `country`, `level`, `population`, `lat`, `long`) VALUES (:id, :parent_id, :left, :right, :depth, :name, :alternames, :country, :level, :population, :lat, :long) ON DUPLICATE KEY UPDATE `alternames`=:alternamesU");
 
 
         $count = 0;
@@ -158,7 +158,8 @@ class seedGeoFile extends Command
                 ':level'        => $item->data[7],
                 ':population'   => $item->data[14],
                 ':lat'          => $item->data[4],
-                ':long'         => $item->data[5]
+                ':long'         => $item->data[5],
+                ':alternamesU'   => $item->data[3],
             ]) === false){
                 throw new Exception("Error in SQL : '$sql'\n".PDO::errorInfo(), 1);
             }
