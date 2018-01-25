@@ -29,9 +29,14 @@ class EloquentTreeItem extends Eloquent {
     	// Fill parent/children attributes
     	self::iprint('Create parent/children relations',$output);
     	foreach (self::$items as $item) {
-    		if($item->parent_id){
+            if ($item->parent_id) {
+                $parent = self::getItem($item->parent_id);
+                if ($parent) {
     			$item->parent = self::getItem($item->parent_id);
     			$item->parent->addChild($item);
+                } else {
+                    $item->delete();
+                }
     		}
     	}
 
@@ -55,9 +60,9 @@ class EloquentTreeItem extends Eloquent {
 
     // Get item by id
     private static function getItem($id){
-    	if(!isset(self::$items[$id]))
-    		throw new \Exception("Item $id not found");
-
+        if (!isset(self::$items[$id])){
+            return false;
+        }
     	return self::$items[$id];
     }
 
